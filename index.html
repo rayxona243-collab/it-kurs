@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Kursga Ro'yxatdan o'tish</title>
+    <!-- Konfetti effekti uchun kutubxona -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #0f0c20;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
+
+        .card {
+            background: #1a1638;
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            border: 1px solid #2d2659;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #ff007f;
+            font-size: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #a5a1c9;
+            font-weight: 600;
+        }
+
+        input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #2d2659;
+            border-radius: 10px;
+            background-color: #0f0c20;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #ff007f;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.3);
+        }
+
+        /* Tanlovlar uchun oyna dizayni */
+        select option {
+            background-color: #1a1638;
+            color: #ffffff;
+        }
+
+        /* Qiziqarli IT Yo'nalishlar kartasi */
+        .directions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .dir-card {
+            background: #0f0c20;
+            border: 2px solid #2d2659;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .dir-card:hover {
+            border-color: #7f00ff;
+        }
+
+        .dir-card.active {
+            border-color: #ff007f;
+            background: #ff007f15;
+            color: #ff007f;
+            font-weight: bold;
+        }
+
+        /* Radio buttonlar */
+        .radio-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .radio-option {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #0f0c20;
+            padding: 10px;
+            border: 2px solid #2d2659;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .radio-option input {
+            accent-color: #ff007f;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(45deg, #ff007f, #7f00ff);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 127, 0.4);
+        }
+
+        .btn-next {
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+        }
+
+        .btn-telegram {
+            background: linear-gradient(45deg, #0088cc, #00c6ff);
+            margin-top: 20px;
+        }
+
+        .emoji {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .success-title {
+            color: #4ed964;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .text-desc {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #d1cde8;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        
+        <!-- 1-BOSQICH: FORMA -->
+        <div id="step1">
+            <h2>✨ IT Kursga Ro'yxatdan O'tish</h2>
+            <form id="formStep1" onsubmit="finishStep1(event)">
+                <div class="form-group">
+                    <label>Ismingiz:</label>
+                    <input type="text" id="userNameInput" placeholder="Ismingizni kiriting..." required>
+                </div>
+                <div class="form-group">
+                    <label>Email manzilingiz:</label>
+                    <input type="email" id="userEmailInput" placeholder="example@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefon raqamingiz:</label>
+                    <input type="tel" id="userPhoneInput" placeholder="+998 90 123 45 67" required>
+                </div>
+
+                <!-- QO'SHILGAN JOY: VILOYAT / MANZIL -->
+                <div class="form-group">
+                    <label>Viloyatingiz:</label>
+                    <select id="userRegionInput" required>
+                        <option value="" disabled selected>Viloyatni tanlang...</option>
+                        <option value="Farg'ona viloyati">Farg'ona viloyati</option>
+                        <option value="Toshkent shahar">Toshkent shahar</option>
+                        <option value="Toshkent viloyati">Toshkent viloyati</option>
+                        <option value="Samarqand viloyati">Samarqand viloyati</option>
+                        <option value="Buxoro viloyati">Buxoro viloyati</option>
+                        <option value="Andijon viloyati">Andijon viloyati</option>
+                        <option value="Namangan viloyati">Namangan viloyati</option>
+                        <option value="Qashqadaryo viloyati">Qashqadaryo viloyati</option>
+                        <option value="Surxondaryo viloyati">Surxondaryo viloyati</option>
+                        <option value="Jizzax viloyati">Jizzax viloyati</option>
+                        <option value="Sirdaryo viloyati">Sirdaryo viloyati</option>
+                        <option value="Xorazm viloyati">Xorazm viloyati</option>
+                        <option value="Qoraqalpog'iston Respublikasi">Qoraqalpog'iston Respublikasi</option>
+                    </select>
+                </div>
+                
+                <!-- IT YO'NALISH TANLASH -->
+                <div class="form-group">
+                    <label>Qaysi yo'nalishga qiziqasiz?</label>
+                    <div class="directions-grid">
+                        <div class="dir-card" onclick="selectDirection(this, 'Frontend WebDev')">
+                            💻 Frontend (Saytlar)
+                        </div>
+                        <div class="dir-card" onclick="selectDirection(this, 'Backend Python/Node')">
+                            ⚙️ Backend (Dasturlash)
+                        </div>
+                        <div class="dir-card" onclick="selectDirection(this, 'Mobile App')">
+                            📱 Mobil Ilovalar
+                        </div>
+                        <div class="dir-card" onclick="selectDirection(this, 'Graphic Design')">
+                            🎨 Grafik Dizayn
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>O'quv shaklini tanlang:</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="format" value="Onlayn" required>
+                            🌐 Onlayn
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="format" value="Oflayn" required>
+                            🏫 Oflayn
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">Keyingisi ➔</button>
+            </form>
+        </div>
+
+        <!-- 1-BOSQICH TABRIGI -->
+        <div id="step1Congrats" style="display: none;">
+            <div class="emoji">🎉</div>
+            <h3 class="success-title">Juda Soz!</h3>
+            <p class="text-desc" id="congratsText"></p>
+            <button class="btn btn-next" onclick="showStep2()">2-bosqichga o'tish ➔</button>
+        </div>
+
+        <!-- 2-BOSQICH: SAVOL -->
+        <div id="step2" style="display: none;">
+            <h2>🎯 Oxirgi savol</h2>
+            <form id="formStep2" onsubmit="finishStep2(event)">
+                <div class="form-group">
+                    <label>IT sohasida tajribangiz bormi?</label>
+                    <select id="userExpInput" required>
+                        <option value="" disabled selected>Tanlang...</option>
+                        <option value="Yo'q, noldan boshlayman">Yo'q, mutlaqo noldan boshlayman</option>
+                        <option value="Biroz bilaman (Boshlang'ich)">Biroz tushuncham bor</option>
+                        <option value="Yaxshi bilaman">Yaxshi bilaman, bilimimni oshirmoqchiman</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Maqsadingiz nima?</label>
+                    <textarea id="userReasonInput" rows="3" placeholder="Masalan: Ishga kirish, frilans qilish..." required></textarea>
+                </div>
+                <button type="submit" class="btn">Arizani Yuborish 🚀</button>
+            </form>
+        </div>
+
+        <!-- YAKUNIY XABAR -->
+        <div id="finalMessage" style="display: none;">
+            <div class="emoji">🎁</div>
+            <h3 class="success-title">Tabriklaymiz!</h3>
+            <p class="text-desc">Arizangiz qabul qilindi! Endi o'zingizga kerakli bo'limni tanlash uchun botimizga o'ting:</p>
+            
+            <!-- Telegram botga o'tish tugmasi -->
+            <a id="telegramBotBtn" href="https://t.me/it_kurs_bot?start=saytdan_keldi" target="_blank" class="btn btn-telegram">
+                🤖 Telegram Botga O'tish
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        const BOT_TOKEN = "8847822723:AAEcKJUgoR9JjAhC6H3wIcQ7ZymCeNeAVMo"; 
+        const CHAT_ID = "6867130781"; 
+        const BOT_USERNAME = "it_kurs_bot"; 
+
+        let userName = "";
+        let userEmail = "";
+        let userPhone = "";
+        let userRegion = "";
+        let selectedCourse = "Tanlanmagan";
+        let userFormat = "";
+
+        function selectDirection(element, courseName) {
+            document.querySelectorAll('.dir-card').forEach(card => card.classList.remove('active'));
+            element.classList.add('active');
+            selectedCourse = courseName;
+        }
+
+        function finishStep1(e) {
+            e.preventDefault();
+            userName = document.getElementById('userNameInput').value;
+            userEmail = document.getElementById('userEmailInput').value;
+            userPhone = document.getElementById('userPhoneInput').value;
+            userRegion = document.getElementById('userRegionInput').value;
+            
+            const formatRadio = document.querySelector('input[name="format"]:checked');
+            userFormat = formatRadio ? formatRadio.value : "Tanlanmagan";
+            
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('congratsText').innerHTML = `Ajoyib <b>${userName}</b>!<br>1-bosqichni muvaffaqiyatli yakunladingiz.`;
+            document.getElementById('step1Congrats').style.display = 'block';
+
+            confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+        }
+
+        function showStep2() {
+            document.getElementById('step1Congrats').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+        }
+
+        function finishStep2(e) {
+            e.preventDefault();
+            const userExp = document.getElementById('userExpInput').value;
+            const userReason = document.getElementById('userReasonInput').value;
+
+            // Telegram botga yuboriladigan xabar (viloyat ham qo'shildi)
+            const message = `<b>🚀 Yangi o'quvchi arizasi!</b>\n\n` +
+                            `👤 <b>Ism:</b> ${userName}\n` +
+                            `📧 <b>Email:</b> ${userEmail}\n` +
+                            `📞 <b>Tel:</b> ${userPhone}\n` +
+                            `📍 <b>Viloyat:</b> ${userRegion}\n` +
+                            `💻 <b>Yo'nalish:</b> ${selectedCourse}\n` +
+                            `📚 <b>Ta'lim shakli:</b> ${userFormat}\n` +
+                            `📊 <b>Tajribasi:</b> ${userExp}\n\n` +
+                            `💡 <b>Maqsadi:</b>\n${userReason}`;
+
+            fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message,
+                    parse_mode: 'HTML'
+                })
+            });
+
+            document.getElementById('telegramBotBtn').href = `https://t.me/${BOT_USERNAME}?start=welcome`;
+
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('finalMessage').style.display = 'block';
+
+            confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+        }
+    </script>
+</body>
+</html>
